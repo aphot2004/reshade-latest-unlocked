@@ -266,21 +266,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID)
 			{
 				reshade::hooks::register_module(L"user32.dll");
 
-#if RESHADE_ADDON_LITE
-				// Disable network hooks when requested through an environment variable and always disable add-ons in that case
-				if (GetEnvironmentVariableW(L"RESHADE_DISABLE_NETWORK_HOOK", nullptr, 0))
-				{
-					extern volatile long g_network_traffic;
-					// Special value to indicate that add-ons should never be enabled
-					g_network_traffic = std::numeric_limits<long>::max();
-					reshade::addon_enabled = false;
-				}
-				else
-				{
-					reshade::hooks::register_module(L"ws2_32.dll");
-				}
-#endif
-
 				// Only register D3D hooks when module is not called opengl32.dll
 				if (!is_opengl)
 				{
